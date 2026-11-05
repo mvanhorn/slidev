@@ -5,6 +5,7 @@ import { notNullish, range } from '@antfu/utils'
 import * as parser from '@slidev/parser/fs'
 import equal from 'fast-deep-equal'
 import MarkdownExit from 'markdown-exit'
+import { join } from 'pathe'
 import YAML from 'yaml'
 import { createDataUtils } from '../options'
 import MarkdownItKatex from '../syntax/katex'
@@ -32,7 +33,7 @@ export function createSlidesLoader(
   const hmrSlidesIndexes = new Set<number>()
   let server: ViteDevServer | undefined
   let skipHmr: { filePath: string, fileContent: string } | null = null
-  const makeAbsoluteImportGlob = createMakeAbsoluteImportGlob(options.userRoot)
+  let makeAbsoluteImportGlob: ReturnType<typeof createMakeAbsoluteImportGlob>
 
   interface ResolvedSourceIds {
     md: string[]
@@ -69,6 +70,12 @@ export function createSlidesLoader(
   return {
     name: 'slidev:loader',
     enforce: 'pre',
+
+    configResolved(config) {
+      const proxyDir = join(config.cacheDir, 'slidev/virtual')
+      makeAbsoluteImportGlob = createMakeAbsoluteImportGlob(proxyDir)
+      config.server.fs.allow.push(proxyDir)
+    },
 
     configureServer(_server) {
       server = _server

@@ -6,6 +6,20 @@ Slidev is powered by [Vite](https://vitejs.dev/) under the hood. This means you 
 
 The `vite.config.ts` will be respected if you have one, and will be merged with the Vite config provided by Slidev, your theme and the addons.
 
+## Configure the Cache Directory
+
+Slidev stores generated import-glob proxy modules in `slidev/virtual` under Vite's `cacheDir`. For a read-only presentation directory, set `cacheDir` to an absolute, writable path:
+
+```ts twoslash [vite.config.ts]
+import { defineConfig } from 'vite'
+
+export default defineConfig({
+  cacheDir: '/tmp/slidev-cache',
+})
+```
+
+Local installations use Vite's default cache directory. Global installations default to `node_modules/.vite` under the Slidev CLI installation, so they do not need to write to the presentation directory. If the CLI installation is also read-only, override `cacheDir` with a writable location as shown above.
+
 ## Configure Internal Plugins
 
 Slidev internally adds the following plugins to Vite:

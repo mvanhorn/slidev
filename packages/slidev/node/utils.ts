@@ -156,10 +156,9 @@ function resolveImportGlobProxyModule(proxyBase: string, content: string) {
   return `${proxyBase}.${hash}.ts`
 }
 
-export function createMakeAbsoluteImportGlob(baseRoot: string) {
+export function createMakeAbsoluteImportGlob(proxyDir: string) {
   const proxyModules = new Map<string, string>()
-  const proxyBasename = 'node_modules/.slidev/virtual/import-glob'
-  const proxyBase = slash(join(baseRoot, proxyBasename))
+  const proxyBase = slash(join(proxyDir, 'import-glob'))
 
   return function makeAbsoluteImportGlob(
     globs: string[],
